@@ -5,16 +5,30 @@ import type { PageData } from './$types';
 
 let { data }: { data: PageData } = $props();
 
-
+function searchByName(name: string){
+   
+  return data.items.filter((animal) => animal.name.includes(name));
+}
+let searchAnimal = $state('')
+let searchClass = $state('')
+let filteredAnimals: any[] = $state([])
+$effect(() => {
+   filteredAnimals = searchByName(searchAnimal)
+})
 </script>
-
-{JSON.stringify(data.items.items)}
-<!--dodaj search-->
+<div class="text-black">
+<select bind:value={searchClass}>
+{#each data.unique_classes as cls}
+   <option>{cls}</option>
+   {/each}
 </select>
-
-
+</div>
+<!--dodaj search-->
+<div class="flex justify-center text-black">
+<input placeholder="Search animal by name" class="rounded-xl m-2 p-2" bind:value={searchAnimal} type="text"/>
+</div>
 <div class="flex justify-center gap-2">
-{#each data.items.items as animal}
+{#each filteredAnimals as animal}
  <ResultBox>
     <h2 class="pb-0">{animal.name}</h2>
     <p class="text-sm italic pb-2">{animal.latinName}</p>
